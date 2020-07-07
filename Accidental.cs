@@ -2,7 +2,7 @@
 {
     public enum Accidental
     {
-        ACCIDENTAL,
+        NATURAL,
         FLAT,
         SHARP
     }
