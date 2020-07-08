@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace MusicLib.Key
 {
@@ -14,40 +12,37 @@ namespace MusicLib.Key
         public MajorKey(Note note)
         {
             Note = note;
-            int currentOffset = wyt.GetSemitoneOffsetOfNote(Note);
-            int iterator = (int)Note.Letter;
-            int i = 0;
-            Accidental accidental = Note.Accidental;
+            int currentOffset = note.GetSemitoneOffsetOfNote();
+            int letterIterator = (int)Note.Letter;
             while (ScaleNotes.Count < Constants.LETTERS_COUNT)
             {
-                Note n = new Note();
-                n.Letter = (NoteLetter)iterator;
-                int naturalNoteOffset = wyt.GetSemitoneOffsetOfNote(n);
-                switch(currentOffset - naturalNoteOffset)
-                {
-                    case 2:
-                        n.Accidental = Accidental.DOUBLE_SHARP;
-                        break;
-                    case 1:
-                        n.Accidental = Accidental.SHARP;
-                        break;
-                    case -1:
-                        n.Accidental = Accidental.FLAT;
-                        break;
-                    case -2:
-                        n.Accidental = Accidental.DOUBLE_FLAT;
-                        break;
-                }
-
-                if (currentOffset == naturalNoteOffset - 1)
-                    n.Accidental = Accidental.FLAT;
-                else if (currentOffset == naturalNoteOffset + 1)
-                    n.Accidental = Accidental.SHARP;
-                ScaleNotes.Add(n);
-                iterator = (iterator + 1) % Constants.LETTERS_COUNT;
-                currentOffset = (currentOffset + Offsets[i]) % Constants.SEMITONES_COUNT;
-                i++;
+                Note generatedNote = generateNoteForScale(currentOffset, letterIterator);
+                letterIterator = (letterIterator + 1) % Constants.LETTERS_COUNT;
+                currentOffset = (currentOffset + Offsets[ScaleNotes.Count]) % Constants.SEMITONES_COUNT;
+                ScaleNotes.Add(generatedNote);
             }
+        }
+
+        private Note generateNoteForScale(int currentOffset, int letterIterator)
+        {
+            Note note = new Note((NoteLetter)letterIterator);
+            switch (currentOffset - note.GetSemitoneOffsetOfNote())
+            {
+                case 2: case -10:
+                    note.Accidental = Accidental.DOUBLE_SHARP;
+                    break;
+                case 1: case -11:
+                    note.Accidental = Accidental.SHARP;
+                    break;
+                case -1: case 11:
+                    note.Accidental = Accidental.FLAT;
+                    break;
+                case -2: case 10:
+                    note.Accidental = Accidental.DOUBLE_FLAT;
+                    break;
+            }
+
+            return note;
         }
 
         public MajorKey ConvertFrom(IKey key)
