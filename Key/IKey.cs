@@ -7,6 +7,6 @@ namespace MusicLib.Key
     public interface IKey
     {
         KeyType KeyType { get; }
-        NoteLetter Letter { get; }
+        Note Note { get; }
     }
 }
