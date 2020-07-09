@@ -6,6 +6,8 @@
         DOUBLE_SHARP,
         NATURAL,
         FLAT,
-        SHARP
+        SHARP,
+        TRIPLE_FLAT,
+        TRIPLE_SHARP
     }
 }

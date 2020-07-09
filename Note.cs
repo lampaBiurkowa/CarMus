@@ -1,5 +1,6 @@
 ﻿using MusicLib.Key;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MusicLib
 {
@@ -44,9 +45,18 @@ namespace MusicLib
             return note.Letter == Letter && note.Accidental == Accidental;
         }
 
-        public void ToKey(GenericKey key)
+        public Note ToKey(GenericKey originalKey, GenericKey newKey)
         {
-
+            int scaleIndex = originalKey.ScaleNotes.IndexOf(originalKey.ScaleNotes.Where(item => item.Letter == Letter).FirstOrDefault());
+            int originalKeyAccidentalSemitoneOffset = Constants.GetOffsetForAccidental(originalKey.ScaleNotes[scaleIndex].Accidental);
+            int newKeyAccidentalSemitoneOffset = Constants.GetOffsetForAccidental(newKey.ScaleNotes[scaleIndex].Accidental);
+            int ownAccidentalSemitoneOffset = Constants.GetOffsetForAccidental(Accidental);
+            int outOfKeyOffset = ownAccidentalSemitoneOffset - originalKeyAccidentalSemitoneOffset;
+            //System.Console.WriteLine($"{ownAccidentalSemitoneOffset} {originalKeyAccidentalSemitoneOffset}");
+            Accidental newAccidental = Constants.GetAccidentalForOffset(newKeyAccidentalSemitoneOffset + outOfKeyOffset);
+            NoteLetter newLetter = newKey.ScaleNotes[scaleIndex].Letter;
+            //System.Console.WriteLine($"dziwne {ownSemitoneOffset} {originalKeySemitoneOffset}");
+            return new Note(newLetter, Octave, newAccidental); //TODO octave issues
         }
 
         public int GetSemitoneOffsetOfNote()
@@ -77,7 +87,7 @@ namespace MusicLib
                     break;
             }
 
-            return (baseSemitoneOffset + Constants.AccidentalOffsetMap[Accidental]) % Constants.SEMITONES_COUNT;
+            return (baseSemitoneOffset + Constants.GetOffsetForAccidental(Accidental)) % Constants.SEMITONES_COUNT;
         }
     }
 }
