@@ -1,8 +1,10 @@
 ﻿namespace MusicLib.Key
 {
-    public class HarmonicMinorKey : IKey
+    public class HarmonicMinorKey : GenericKey
     {
-        public KeyType KeyType => KeyType.MAJOR;
-        public Note Note => throw new System.NotImplementedException();
+        public override KeyType KeyType => KeyType.HARMONIC_MINOR;
+        public override int[] Offsets => new int[] { 2, 2, 1, 2, 2, 2, 1 };
+
+        public HarmonicMinorKey(Note note) : base(note) { }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MusicLib.Key;
+using System.Collections.Generic;
 
 namespace MusicLib
 {
@@ -28,12 +29,12 @@ namespace MusicLib
             return 0;
         }
 
-        public void Rise(int semitonesCount)
+        public void Rise(int semitonesCount, GenericKey key)
         {
-
+            
         }
 
-        public void Lower(int semitonesCount)
+        public void Lower(int semitonesCount, GenericKey key)
         {
 
         }
@@ -43,7 +44,7 @@ namespace MusicLib
             return note.Letter == Letter && note.Accidental == Accidental;
         }
 
-        public void ToKey(IKey key)
+        public void ToKey(GenericKey key)
         {
 
         }
@@ -75,12 +76,8 @@ namespace MusicLib
                     baseSemitoneOffset = 10;
                     break;
             }
-            if (Accidental == Accidental.FLAT)
-                baseSemitoneOffset = (baseSemitoneOffset - 1) % Constants.SEMITONES_COUNT;
-            else if (Accidental == Accidental.SHARP)
-                baseSemitoneOffset = (baseSemitoneOffset + 1) % Constants.SEMITONES_COUNT;
 
-            return baseSemitoneOffset;
+            return (baseSemitoneOffset + Constants.AccidentalOffsetMap[Accidental]) % Constants.SEMITONES_COUNT;
         }
     }
 }
