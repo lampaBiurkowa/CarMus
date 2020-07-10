@@ -1,4 +1,5 @@
 ﻿using MusicLib.Key;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,7 +28,8 @@ namespace MusicLib
 
         public double GetPitchInHz()
         {
-            return 0;
+            int semitonesFactor = Letter < Constants.OCTAVE_START_LETTER ? GetSemitoneOffsetOfNote() : GetSemitoneOffsetOfNote() - Constants.SEMITONES_COUNT;
+            return Constants.A0_PITCH * Math.Pow(Constants.PITCH_CONSTANT, (Octave * Constants.SEMITONES_COUNT) + semitonesFactor);
         }
 
         public void Rise(int semitonesCount, GenericKey key)
@@ -52,11 +54,21 @@ namespace MusicLib
             int newKeyAccidentalSemitoneOffset = Constants.GetOffsetForAccidental(newKey.ScaleNotes[scaleIndex].Accidental);
             int ownAccidentalSemitoneOffset = Constants.GetOffsetForAccidental(Accidental);
             int outOfKeyOffset = ownAccidentalSemitoneOffset - originalKeyAccidentalSemitoneOffset;
-            //System.Console.WriteLine($"{ownAccidentalSemitoneOffset} {originalKeyAccidentalSemitoneOffset}");
             Accidental newAccidental = Constants.GetAccidentalForOffset(newKeyAccidentalSemitoneOffset + outOfKeyOffset);
             NoteLetter newLetter = newKey.ScaleNotes[scaleIndex].Letter;
-            //System.Console.WriteLine($"dziwne {ownSemitoneOffset} {originalKeySemitoneOffset}");
-            return new Note(newLetter, Octave, newAccidental); //TODO octave issues
+
+            return new Note(newLetter, getOctaveOfNoteInNewKey(newLetter), newAccidental);
+        }
+
+        int getOctaveOfNoteInNewKey(NoteLetter newLetter)
+        {
+            int newOctave = Octave;
+            if (Letter < Constants.OCTAVE_START_LETTER && newLetter >= Constants.OCTAVE_START_LETTER)
+                newOctave++;
+            else if (Letter >= Constants.OCTAVE_START_LETTER && newLetter < Constants.OCTAVE_START_LETTER)
+                newOctave--;
+
+            return newOctave;
         }
 
         public int GetSemitoneOffsetOfNote()
