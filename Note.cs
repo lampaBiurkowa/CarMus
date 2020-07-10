@@ -26,11 +26,9 @@ namespace MusicLib
             Octave = octave;
         }
 
-        public double GetPitchInHz()
-        {
-            int semitonesFactor = Letter < Constants.OCTAVE_START_LETTER ? GetSemitoneOffsetOfNote() : GetSemitoneOffsetOfNote() - Constants.SEMITONES_COUNT;
-            return Constants.A0_PITCH * Math.Pow(Constants.PITCH_CONSTANT, (Octave * Constants.SEMITONES_COUNT) + semitonesFactor);
-        }
+        public double GetPitchInHz() => Constants.A0_PITCH * Math.Pow(Constants.PITCH_CONSTANT, (Octave * Constants.SEMITONES_COUNT) + getCBasedOctaveSemitonesFactor());
+
+        int getCBasedOctaveSemitonesFactor() => Letter < Constants.OCTAVE_START_LETTER ? GetGenericSemitoneOffsetOfNote() : GetGenericSemitoneOffsetOfNote() - Constants.SEMITONES_COUNT;
 
         public void Rise(int semitonesCount, GenericKey key)
         {
@@ -42,7 +40,7 @@ namespace MusicLib
 
         }
 
-        public bool SameSound(Note note)
+        public bool SameBesideOctave(Note note)
         {
             return note.Letter == Letter && note.Accidental == Accidental;
         }
@@ -71,7 +69,7 @@ namespace MusicLib
             return newOctave;
         }
 
-        public int GetSemitoneOffsetOfNote()
+        public int GetGenericSemitoneOffsetOfNote()
         {
             int baseSemitoneOffset = 0;
             switch (Letter)
@@ -101,5 +99,7 @@ namespace MusicLib
 
             return (baseSemitoneOffset + Constants.GetOffsetForAccidental(Accidental)) % Constants.SEMITONES_COUNT;
         }
+
+        public int GetTotalSemitoneOffsetOfNote() => Octave * Constants.SEMITONES_COUNT + getCBasedOctaveSemitonesFactor();
     }
 }
