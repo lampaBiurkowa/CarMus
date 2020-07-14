@@ -13,28 +13,37 @@ namespace MusicLib
             addNonPerfectBasedInterval(minSemitonesCount += 1);
             addNonPerfectBasedInterval(minSemitonesCount += 2);
             addPerfectBasedInterval(minSemitonesCount += 2);
-            addPerfectBasedInterval(minSemitonesCount += 1);
+            addPerfectBasedInterval(minSemitonesCount += 2);
             addNonPerfectBasedInterval(minSemitonesCount += 1);
             addNonPerfectBasedInterval(minSemitonesCount += 2);
             addPerfectBasedInterval(minSemitonesCount += 2);
+
+            foreach (var b in intervalsMap)
+            {
+                System.Console.WriteLine("====");
+                foreach (var a in b)
+                    System.Console.WriteLine($"it {a.Key} {a.Value}");
+            }
+                
+                    
         }
 
         static void addPerfectBasedInterval(int minSemitonesCount)
         {
             intervalsMap.Add(new Dictionary<int, IntervalQuality> {
-                {minSemitonesCount, IntervalQuality.DIMINISHED },
-                {minSemitonesCount + 1, IntervalQuality.PERFECT },
-                {minSemitonesCount + 2, IntervalQuality.AUGMENTED }
+                { minSemitonesCount, IntervalQuality.DIMINISHED },
+                { minSemitonesCount + 1, IntervalQuality.PERFECT },
+                { minSemitonesCount + 2, IntervalQuality.AUGMENTED }
             });
         }
 
         static void addNonPerfectBasedInterval(int minSemitonesCount)
         {
             intervalsMap.Add(new Dictionary<int, IntervalQuality> {
-                {minSemitonesCount, IntervalQuality.DIMINISHED },
-                {minSemitonesCount + 1, IntervalQuality.MINOR },
-                {minSemitonesCount + 2, IntervalQuality.MAJOR },
-                {minSemitonesCount + 3, IntervalQuality.AUGMENTED }
+                { minSemitonesCount, IntervalQuality.DIMINISHED },
+                { minSemitonesCount + 1, IntervalQuality.MINOR },
+                { minSemitonesCount + 2, IntervalQuality.MAJOR },
+                { minSemitonesCount + 3, IntervalQuality.AUGMENTED }
             });
         }
 
@@ -51,9 +60,10 @@ namespace MusicLib
         public static Interval DetermineInterval(Note note1, Note note2)
         {
             int semitonesDifference = note2.GetTotalSemitoneOffsetOfNote() - note1.GetTotalSemitoneOffsetOfNote();
-            int lettersDifference = (note2.Letter - note1.Letter + 1 + Constants.LETTERS_COUNT) % Constants.LETTERS_COUNT;
+            System.Console.WriteLine($"{note2.GetTotalSemitoneOffsetOfNote()} {note1.GetTotalSemitoneOffsetOfNote()}");
+            int lettersDifference = (note2.Letter - note1.Letter + Constants.LETTERS_COUNT) % Constants.LETTERS_COUNT + 1;
 
-            IntervalQuality quality = intervalsMap[lettersDifference][semitonesDifference];
+            IntervalQuality quality = intervalsMap[lettersDifference - 1][semitonesDifference];
             return new Interval(lettersDifference, quality);
         }
     }
