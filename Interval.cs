@@ -47,13 +47,15 @@ namespace MusicLib
             });
         }
 
+        public int AdditionalOctaves { get; set; }
         public IntervalQuality Quality { get; set; } = IntervalQuality.GENERIC;
         public int Length { get; set; }
 
         public Interval() { }
-        public Interval(int length, IntervalQuality quality = IntervalQuality.GENERIC)
+        public Interval(int length, IntervalQuality quality = IntervalQuality.GENERIC, int additionalOctaves = 0)
         {
-            Length = length;
+            Length = length % (Constants.LETTERS_COUNT + 1) + 1;
+            AdditionalOctaves = additionalOctaves;
             Quality = quality;
         }
 
@@ -61,10 +63,10 @@ namespace MusicLib
         {
             int semitonesDifference = note2.GetTotalSemitoneOffsetOfNote() - note1.GetTotalSemitoneOffsetOfNote();
             System.Console.WriteLine($"{note2.GetTotalSemitoneOffsetOfNote()} {note1.GetTotalSemitoneOffsetOfNote()}");
-            int lettersDifference = (note2.Letter - note1.Letter + Constants.LETTERS_COUNT) % Constants.LETTERS_COUNT + 1;
+            int lettersDifference = (note2.Letter - note1.Letter + Constants.LETTERS_COUNT) % Constants.LETTERS_COUNT;
 
-            IntervalQuality quality = intervalsMap[lettersDifference - 1][semitonesDifference];
-            return new Interval(lettersDifference, quality);
+            IntervalQuality quality = intervalsMap[lettersDifference % Constants.LETTERS_COUNT][semitonesDifference % Constants.SEMITONES_COUNT];
+            return new Interval(lettersDifference, quality, semitonesDifference / Constants.SEMITONES_COUNT);
         }
     }
 }
