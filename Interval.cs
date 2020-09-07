@@ -17,15 +17,6 @@ namespace MusicLib
             addNonPerfectBasedInterval(minSemitonesCount += 1);
             addNonPerfectBasedInterval(minSemitonesCount += 2);
             addPerfectBasedInterval(minSemitonesCount += 2);
-
-            foreach (var b in intervalsMap)
-            {
-                System.Console.WriteLine("====");
-                foreach (var a in b)
-                    System.Console.WriteLine($"it {a.Key} {a.Value}");
-            }
-                
-                    
         }
 
         static void addPerfectBasedInterval(int minSemitonesCount)
@@ -51,7 +42,6 @@ namespace MusicLib
         public IntervalQuality Quality { get; set; } = IntervalQuality.GENERIC;
         public int Length { get; set; }
 
-        public Interval() { }
         public Interval(int length, IntervalQuality quality = IntervalQuality.GENERIC, int additionalOctaves = 0)
         {
             Length = length % (Constants.LETTERS_COUNT + 1) + 1;
@@ -62,7 +52,6 @@ namespace MusicLib
         public static Interval DetermineInterval(Note note1, Note note2)
         {
             int semitonesDifference = note2.GetTotalSemitoneOffsetOfNote() - note1.GetTotalSemitoneOffsetOfNote();
-            System.Console.WriteLine($"{note2.GetTotalSemitoneOffsetOfNote()} {note1.GetTotalSemitoneOffsetOfNote()}");
             int lettersDifference = (note2.Letter - note1.Letter + Constants.LETTERS_COUNT) % Constants.LETTERS_COUNT;
 
             IntervalQuality quality = intervalsMap[lettersDifference % Constants.LETTERS_COUNT][semitonesDifference % Constants.SEMITONES_COUNT];
